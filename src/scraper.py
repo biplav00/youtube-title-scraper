@@ -17,7 +17,7 @@ def scrape_youtube_videos(channel_url):
         driver.get(channel_url)
         time.sleep(5) 
 
-        logging.info("|------Scrolling to the last page-------|")
+        logging.info("------Scrolling to the last page-------")
         
         scroll_pause_time = 2
         last_height = driver.execute_script("return document.documentElement.scrollHeight")
@@ -29,16 +29,17 @@ def scrape_youtube_videos(channel_url):
                 break
             last_height = new_height
         
-        logging.info("|------Extracting video elements-------|")
+        logging.info("------Extracting video elements-------")
         video_elements = driver.find_elements(By.XPATH, "(//div[@id='content']//ytd-rich-grid-media)")
         videos = []
         title_index = 1
         views_index = 1
-        logging.info("|------Extracting video title and views-------|")
+        logging.info("------Extracting video title and views-------")
         for video in video_elements:
             try:
                 title = video.find_element(By.XPATH, f"(//yt-formatted-string[@id='video-title'])[{title_index}]").text
                 views = video.find_element(By.XPATH, f"(//span[contains(@class,'inline-metadata-item style-scope')])[{views_index}]").text
+                views = views.replace(" views", "")
                 logging.info(f"SN: {title_index} Title: {title}, Views: {views}")
                 videos.append({"sn": title_index, "title": title, "views": views})
             except Exception as e:
